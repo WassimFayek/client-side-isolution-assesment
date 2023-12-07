@@ -2,9 +2,11 @@
 import axios from "axios";
 import Table from "@/Components/Table";
 import React, {useEffect, useState} from "react";
+import ContactForm from "@/Components/ContactForm";
 
 const Home: React.FC = () => {
     const [contacts, setContacts] = useState([]);
+    const [showForm, setShowForm] = useState(false);
 
     const fetchContacts = async () => {
         try {
@@ -34,9 +36,9 @@ const Home: React.FC = () => {
         <>
             <header className={'flex justify-between items-center p-4 '}>
                 <h1 className={'text-4xl p-6'}>Contact List</h1>
-                <button>Add Contact</button>
-
+                <button onClick={() => setShowForm(true)}>Add Contact</button>
             </header>
+            {showForm && <ContactForm onSubmit={()=>console.log("add")} />}
             <div>
                 <Table contacts={contacts} onDelete={handleDelete} onUpdate={() => {
                     console.log("update")
