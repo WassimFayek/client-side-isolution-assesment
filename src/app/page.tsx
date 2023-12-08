@@ -6,7 +6,18 @@ import ContactForm from "@/Components/ContactForm";
 
 const Home: React.FC = () => {
     const [contacts, setContacts] = useState([]);
-    const [showForm, setShowForm] = useState(false);
+    const [isDialogOpen, setDialogOpen] = useState(false);
+    const [isUpdateMode, setUpdateMode] = useState(false);
+    const [selectedContact, setSelectedContact] = useState({});
+
+    const handleOpenDialog = () => {
+        setDialogOpen(true);
+        setUpdateMode(false);
+    };
+
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+    };
 
     const fetchContacts = async () => {
         try {
@@ -31,18 +42,28 @@ const Home: React.FC = () => {
         }
     };
 
+    const handleUpdate = (contact: object) => {
+        setDialogOpen(true);
+        setUpdateMode(true);
+        setSelectedContact(contact);
+    };
+
 
     return (
         <>
             <header className={'flex justify-between items-center p-4 '}>
                 <h1 className={'text-4xl p-6'}>Contact List</h1>
-                <button onClick={() => setShowForm(true)}>Add Contact</button>
+                <button onClick={handleOpenDialog}>Add Contact</button>
             </header>
-            {showForm && <ContactForm onSubmit={()=>console.log("add")} />}
+            <ContactForm
+                isOpen={isDialogOpen}
+                onClose={handleCloseDialog}
+                isUpdateMode={isUpdateMode}
+                selectedContact={selectedContact}
+                onReload = {fetchContacts}
+            />
             <div>
-                <Table contacts={contacts} onDelete={handleDelete} onUpdate={() => {
-                    console.log("update")
-                }}/>
+                <Table contacts={contacts} onDelete={handleDelete} onUpdate={handleUpdate}/>
             </div>
         </>
     )
