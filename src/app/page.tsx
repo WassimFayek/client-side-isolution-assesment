@@ -3,6 +3,8 @@ import axios from "axios";
 import Table from "@/Components/Table";
 import React, {useEffect, useState} from "react";
 import ContactForm from "@/Components/ContactForm";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Home: React.FC = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -54,7 +56,6 @@ const Home: React.FC = () => {
         <>
             <header className={'flex justify-between items-center p-4 '}>
                 <h1 className={'text-4xl p-6'}>Contact List</h1>
-                <button onClick={handleOpenDialog}>Add Contact</button>
             </header>
             <ContactForm
                 isOpen={isDialogOpen}
@@ -64,6 +65,15 @@ const Home: React.FC = () => {
                 onReload = {fetchContacts}
             />
             <div>
+                <div className="flex justify-end pr-32">
+                    <button
+                        onClick={handleOpenDialog}
+                        className="flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                    >
+                        <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                        Add Contact
+                    </button>
+                </div>
                 <Table contacts={contacts} onDelete={handleDelete} onUpdate={handleUpdate}/>
             </div>
         </>
