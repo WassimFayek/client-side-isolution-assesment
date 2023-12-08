@@ -37,7 +37,7 @@ const Table = ({contacts, onDelete, onUpdate}) => {
                                         <FontAwesomeIcon
                                             icon={faEdit}
                                             className="text-blue-500 cursor-pointer hover:text-blue-700 mr-2"
-                                            onClick={() => onUpdate(contact.id)}
+                                            onClick={() => onUpdate(contact)}
                                         />
                                         <FontAwesomeIcon
                                             icon={faTrash}
