@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import ContactForm from "@/Components/ContactForm";
 
 const Home: React.FC = () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [contacts, setContacts] = useState([]);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [isUpdateMode, setUpdateMode] = useState(false);
@@ -21,7 +22,7 @@ const Home: React.FC = () => {
 
     const fetchContacts = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/list-contacts');
+            const response = await axios.get(apiUrl + 'list-contacts');
             setContacts(response.data);
         } catch (error) {
             console.error('Error fetching contacts:', error);
@@ -34,7 +35,7 @@ const Home: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:8000/api/delete-contacts/${id}`);
+            await axios.delete(apiUrl + `delete-contacts/${id}`);
             await fetchContacts();
             console.log('Contact deleted successfully');
         } catch (error) {

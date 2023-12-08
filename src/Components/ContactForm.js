@@ -9,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
 const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onReload}) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -49,9 +50,9 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
     const handleSave = async () => {
         let url = ''
         if (!isUpdateMode) {
-            url = `http://localhost:8000/api/store-contacts/`
+            url = apiUrl + `store-contacts/`
         } else {
-            url = `http://localhost:8000/api/update-contacts/${selectedContact.id}`
+            url = apiUrl + `update-contacts/${selectedContact.id}`
         }
         try {
             await axios.post(url, {
