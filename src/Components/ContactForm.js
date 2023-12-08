@@ -16,6 +16,13 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
         phoneNumber: '',
     });
 
+    const [formErrors, setFormErrors] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+    });
+
     useEffect(() => {
         if (isUpdateMode && selectedContact) {
             setFormData({
@@ -54,11 +61,15 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
                 phone_number: formData.phoneNumber
             });
             onReload()
+            onClose()
             console.log('Contact added successfully');
         } catch (error) {
-            console.error('Error while adding new contact:', error);
+            if (error.response && error.response.data && error.response.data.errors) {
+                setFormErrors(error.response.data.errors);
+            } else {
+                console.error('Error while adding/updating contact:', error);
+            }
         }
-        onClose();
     };
 
 
@@ -79,6 +90,8 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
                     label="First Name"
                     onChange={handleChange}
                     value={formData.firstName}
+                    error={!!formErrors.first_name}
+                    helperText={formErrors.first_name}
                 />
                 <TextField
                     fullWidth
@@ -89,6 +102,8 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
                     label="Last Name"
                     onChange={handleChange}
                     value={formData.lastName}
+                    error={!!formErrors.last_name}
+                    helperText={formErrors.last_name}
                 />
                 <TextField
                     fullWidth
@@ -99,6 +114,8 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
                     margin="dense"
                     value={formData.email}
                     onChange={handleChange}
+                    error={!!formErrors.email}
+                    helperText={formErrors.email}
                 />
                 <TextField
                     fullWidth
@@ -109,6 +126,8 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
                     label="Phone Number"
                     onChange={handleChange}
                     value={formData.phoneNumber}
+                    error={!!formErrors.phone_number}
+                    helperText={formErrors.phone_number}
                 />
             </DialogContent>
             <DialogActions>
