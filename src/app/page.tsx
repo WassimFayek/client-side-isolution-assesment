@@ -4,6 +4,7 @@ import Table from "@/Components/Table";
 import Snackbar from '@mui/material/Snackbar';
 import React, {useEffect, useState} from "react";
 import ContactForm from "@/Components/ContactForm";
+import ConfirmDialog from "@/Components/ConfirmDialog";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import MuiAlert, {AlertColor} from '@mui/material/Alert';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +16,9 @@ const Home: React.FC = () => {
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [isUpdateMode, setUpdateMode] = useState(false);
     const [selectedContact, setSelectedContact] = useState({});
+    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+    const [confirmationAction, setConfirmationAction] = useState('');
+    const [confirmationDeleteId, setConfirmationDeleteId] = useState(0);
 
     const [snackbarInfo, setSnackbarInfo] = useState<{
         open: boolean;
@@ -61,19 +65,32 @@ const Home: React.FC = () => {
     }, []);
 
     const handleDelete = async (id: number) => {
-        try {
-            await axios.delete(apiUrl + `delete-contacts/${id}`);
-            await fetchContacts();
-            handleSnackbar('Contact deleted successfully', 'success');
-        } catch (error) {
-            handleSnackbar('Error deleting contact', 'error');
-        }
+        setConfirmationDialogOpen(true);
+        setConfirmationAction('delete');
+        setConfirmationDeleteId(id);
     };
 
     const handleUpdate = (contact: object) => {
         setDialogOpen(true);
         setUpdateMode(true);
         setSelectedContact(contact);
+    };
+
+    const handleCloseConfirmationDialog = () => {
+        setConfirmationDialogOpen(false);
+    };
+
+    const handleConfirm = async () => {
+        if (confirmationAction === 'delete') {
+            try {
+                await axios.delete(apiUrl + `delete-contacts/${confirmationDeleteId}`);
+                await fetchContacts();
+                handleSnackbar('Contact deleted successfully', 'success');
+            } catch (error) {
+                handleSnackbar('Error deleting contact', 'error');
+            }
+            setConfirmationDialogOpen(false);
+        }
     };
 
     return (
@@ -116,6 +133,14 @@ const Home: React.FC = () => {
                     {snackbarInfo.message}
                 </MuiAlert>
             </Snackbar>
+
+            <ConfirmDialog
+                title="Confirm Action"
+                onConfirm={handleConfirm}
+                open={confirmationDialogOpen}
+                onClose={handleCloseConfirmationDialog}
+                message={`Are you sure you want to ${confirmationAction === 'delete' ? 'delete' : 'update'} this contact?`}
+            />
         </>
     )
 }
