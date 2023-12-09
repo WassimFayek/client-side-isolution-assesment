@@ -66,6 +66,12 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
             onReload()
             onClose()
             handleSnackBar(message, 'success');
+            setFormData({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phoneNumber: '',
+            });
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
                 setFormErrors(error.response.data.errors);
