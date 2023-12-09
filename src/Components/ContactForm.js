@@ -8,7 +8,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 
-const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onReload}) => {
+const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onReload, handleSnackBar}) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [formData, setFormData] = useState({
         firstName: '',
@@ -48,11 +48,13 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
     };
 
     const handleSave = async () => {
-        let url = ''
+        let url, message = ''
         if (!isUpdateMode) {
             url = apiUrl + `store-contacts/`
+            message = 'Contact added successfully'
         } else {
             url = apiUrl + `update-contacts/${selectedContact.id}`
+            message = 'Contact updated successfully'
         }
         try {
             await axios.post(url, {
@@ -63,12 +65,12 @@ const ContactFormDialog = ({isOpen, onClose, isUpdateMode, selectedContact, onRe
             });
             onReload()
             onClose()
-            console.log('Contact added successfully');
+            handleSnackBar(message, 'success');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
                 setFormErrors(error.response.data.errors);
             } else {
-                console.error('Error while adding/updating contact:', error);
+                handleSnackBar('Error while adding/updating contact:', 'error');
             }
         }
     };
